@@ -28,6 +28,27 @@ module "tls_private_key" {
   source = "github.com/den-vasyliev/tf-hashicorp-tls-keys"
 }
 
+module "gke-workload-identity" {
+  source              = "terraform-google-modules/kubernetes-engine/google//modules/workload-identity"
+  name                = "kustomize-controller"
+  namespace           = "flux-system"
+  project_id          = var.GOOGLE_PROJECT
+  location            = var.GOOGLE_REGION
+  cluster_name        = "main"
+  annotate_k8s_sa     = true
+  use_existing_k8s_sa = true
+  roles               = ["roles/cloudkms.cryptoKeyEncrypterDecrypter"]
+}
+
+module "kms" {
+  source  = "github.com/den-vasyliev/terraform-google-kms"
+  project_id        = var.GOOGLE_PROJECT
+  location          = "global"
+  keyring           = "kbot"
+  keys              = ["TELE_TOKEN"]
+  prevent_destroy   = false
+}
+
 terraform {
   backend "gcs" {
     bucket = "tf-gke-demo"
