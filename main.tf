@@ -8,7 +8,7 @@ module "github_repository" {
 }
 
 module "gke_cluster" {
-  source         = "github.com/denisklp/tf-gcp-gke-cluster"
+  source         = "github.com/den-vasyliev/tf-google-gke-cluster?ref=gke_auth"
   GOOGLE_REGION  = var.GOOGLE_REGION
   GOOGLE_PROJECT = var.GOOGLE_PROJECT
   GKE_NUM_NODES  = var.GKE_NUM_NODES
@@ -41,12 +41,12 @@ module "gke-workload-identity" {
 }
 
 module "kms" {
-  source  = "github.com/den-vasyliev/terraform-google-kms"
-  project_id        = var.GOOGLE_PROJECT
-  location          = "global"
-  keyring           = "kbot"
-  keys              = ["TELE_TOKEN"]
-  prevent_destroy   = false
+  source          = "github.com/den-vasyliev/terraform-google-kms"
+  project_id      = var.GOOGLE_PROJECT
+  location        = "global"
+  keyring         = "kbot"
+  keys            = ["TELE_TOKEN"]
+  prevent_destroy = false
 }
 
 terraform {
